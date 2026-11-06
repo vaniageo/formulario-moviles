@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulario</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: transparent;
+    color: #111827;
+  }
+  .card {
+    max-width: 560px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px 22px 24px;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 20px 0 16px;
+  }
+  .question {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  input[type="number"] {
+    width: 100%;
+    height: 34px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 14px;
+    color: #111827;
+  }
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: #fff;
+  }
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+  .options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+  }
+  .options input[type="radio"] {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #2563eb;
+    cursor: pointer;
+  }
+  button {
+    margin-top: 20px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover { background: #1d4ed8; }
+  button:disabled { background: #9ca3af; cursor: default; }
+  .mensaje {
+    display: none;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .ok { color: #15803d; }
+  .error { color: #b91c1c; }
+</style>
+</head>
+<body>
+
+<form class="card" id="formulario">
+  <p class="question">¿Cuántos móviles sin usar hay en tu casa?</p>
+  <input type="number" name="moviles_sin_usar" min="0" step="1" required aria-label="Número de móviles sin usar">
+
+  <hr>
+
+  <p class="question">¿Cuántos años tiene tu móvil?</p>
+  <div class="options" role="radiogroup">
+    <label><input type="radio" name="antiguedad_movil" value="menos de 1" required> menos de 1</label>
+    <label><input type="radio" name="antiguedad_movil" value="1-2"> 1-2</label>
+    <label><input type="radio" name="antiguedad_movil" value="3 o más"> 3 o más</label>
+  </div>
+
+  <button type="submit" id="boton">Enviar</button>
+  <p class="mensaje" id="mensaje"></p>
+</form>
+
+<script>
+  // ▼▼▼ PEGA AQUÍ, ENTRE LAS COMILLAS, LA URL DE TU APLICACIÓN WEB DE GOOGLE ▼▼▼
+  const URL_HOJA = 'https://script.google.com/macros/s/AKfycbw8EdVZmIZul2HoQUpxHC_xBgTG9uZazcKpiRy4SQ1E-u-e_VglL-CXkwTUnCpgzpQdng/exec';
+  // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+  const form = document.getElementById('formulario');
+  const boton = document.getElementById('boton');
+  const mensaje = document.getElementById('mensaje');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    boton.disabled = true;
+    boton.textContent = 'Enviando…';
+
+    try {
+      await fetch(URL_HOJA, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: new URLSearchParams(new FormData(form))
+      });
+      mensaje.textContent = '¡Gracias por responder!';
+      mensaje.className = 'mensaje ok';
+      boton.textContent = 'Enviado';
+    } catch (err) {
+      mensaje.textContent = 'No se ha podido enviar. Inténtalo de nuevo.';
+      mensaje.className = 'mensaje error';
+      boton.disabled = false;
+      boton.textContent = 'Enviar';
+    }
+    mensaje.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
